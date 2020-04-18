@@ -5,28 +5,24 @@ collision = require "collision"
 level_io = require "level"
 Camera = require "camera"
 local control = require "gameplay.control"
-
-
-player_id = "player_0x"
-control_id = "player_control"
+gamestate = require "gameplay.gamestate"
 
 function love.load()
     gfx.setBackgroundColor(0, 0, 0, 0)
 
-    level = level_io.load("art/maps/build/test.lua")
+    level = level_io.load(
+        "art/maps/build/cave_1.lua", require "loader", gamestate.scene_graph
+    )
 
-    scene_graph = Node.create(require "scene_graph")
-    local player = require "actor.player"
-    world = bump.newWorld(64)
-    scene_graph:init_actor(player_id, player.scene, level.world)
-    local player_body = scene_graph:get_body(player_id)
-    player_body.transform = transform(100, 100)
-    local player_sprite = scene_graph:get_sprite(player_id):queue("run")
-    scene_graph:get_sprite(player_id):find("torch"):set_motion(0, 0)
+    gamestate.scene_graph.world = level.world
 
-    coroutine.set(control_id, control.idle, scene_graph, player_id)
+    coroutine.set(
+        gamestate.control_id, control.idle, gamestate.scene_graph, gamestate.player_id
+    )
 
     camera = Camera.create()
+
+    gamestate:set_torch_level(4)
 end
 
 function love.keypressed(...)
@@ -34,10 +30,12 @@ function love.keypressed(...)
 end
 
 function love.update(dt)
+    gamestate:update(dt)
     event("update", dt)
-    scene_graph:traverse(require "scene.update", {dt = dt})
+    gamestate.scene_graph:traverse(require "scene.update", {dt = dt})
     tween.update(dt)
     event:spin()
+    camera:update(dt, gamestate.scene_graph:get_body(gamestate.player_id), level)
     require("lovebird").update()
 end
 
@@ -48,7 +46,7 @@ function love.draw()
 
     render.fullpass(
         camera, level,
-        scene_graph:find("world")
+        gamestate.scene_graph:find("world")
     )
     --gfx.origin()
     --draw_world(level.world)

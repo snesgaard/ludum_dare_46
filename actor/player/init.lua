@@ -32,9 +32,16 @@ function player.scene(world)
 
     function sprite.on_slice_update(slices)
         torch:reshape(slices.torch)
+
+        collision.sprite_hitbox_sync(body, slices)
+
+        local torch = body:find("hitbox/torch")
+        if torch then
+            torch.subtype = "torch"
+        end
     end
 
-    local grav_y, jump_speed = collision.Body.jump_curve(110, 0.4)
+    local grav_y, jump_speed = collision.Body.jump_curve(16 * 5.5, 0.4)
     body.jump_speed = jump_speed
     body.default_gravity = vec2(0, grav_y)
     body:set_gravity(vec2(0, grav_y))

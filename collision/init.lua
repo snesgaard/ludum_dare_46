@@ -29,7 +29,8 @@ function api.sprite_hitbox_sync(body, slices)
             local node = children[key]
             node:set_shape(slice)
         else
-            master:child(key, api.Hitbox, slice:unpack())
+            local node = master:child(key, api.Hitbox, slice:unpack())
+            node.name = key
         end
     end
 end

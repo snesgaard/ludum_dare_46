@@ -16,7 +16,8 @@ function love.load(arg)
 
     local entrymap = {
         node = "stage/node",
-        sprite = "stage/sprite"
+        sprite = "stage/sprite",
+        scene = "stage/scene"
     }
     entry = entrymap[entry]
     if entry then

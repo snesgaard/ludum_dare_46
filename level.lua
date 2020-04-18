@@ -8,7 +8,8 @@ local function is_inbound(world, shape)
     return 0 <= lx and 0 <= ly and ux <= world._width and uy <= world._height
 end
 
-function level.load(path)
+function level.load(path, loader, ...)
+    loader = loader or {}
     local world = bump.newWorld()
     local level = sti(path, { "bump" })
     level:bump_init(world)
@@ -16,6 +17,7 @@ function level.load(path)
     world._width = level.width * level.tilewidth
     world._height = level.height * level.tileheight
     world.is_inbound = is_inbound
+    gamestate.scene_graph.world = world
 
     local bg_layer = level:addCustomLayer("bg_layer", 1)
 
@@ -27,6 +29,31 @@ function level.load(path)
         gfx.setColor(1, 1, 1)
         gfx.pop()
     end
+
+        for name, layer in pairs(level.layers) do
+            if name == "entity" then
+                for _, obj in pairs(layer.objects) do
+                    local f = loader[obj.type]
+                    if f and obj.visible then
+                        local id = f(level.world, obj, ...)
+                        if obj.properties.script then
+                            if id then
+                                local script = require(obj.properties.script)
+                                coroutine.set(
+                                    id, script, gamestate.scene_graph, id,
+                                    obj.properties,
+                                    spatial(obj.x, obj.y, obj.width, obj.height)
+                                )
+                            else
+                                log.warn("An id must be given for %s", obj.name)
+                            end
+                        end
+                    end
+
+                end
+                layer.visible = false
+            end
+        end
 
     collision.init(level.world)
 

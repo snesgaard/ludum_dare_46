@@ -9,14 +9,24 @@ function scene_graph:create()
     self:child("screen_ui")
 end
 
+function scene_graph:deinit_actor(id)
+    local body = self:get_body(id)
+    if not body then return end
+    body:destroy()
+    return self
+end
+
 function scene_graph:init_actor(id, f, ...)
+    if not id then
+        errorf("Give id...")
+    end
     local actors = self:find("world/actors")
     local node = f(...)
     if node then
         node.id = id
         actors:adopt(id, node)
     end
-    return self
+    return node
 end
 
 function scene_graph:screen_ui(node_type, ...)

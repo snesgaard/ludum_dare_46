@@ -136,6 +136,9 @@ function body:update(dt, args)
             self.ground = love.timer.getTime()
             self.on_ground = true
             event(self, "ground", self.ground)
+            if self.on_ground_collision then
+                self:on_ground_collision()
+            end
         elseif valid_type_vertical(c) and c.normal.y > 0.9 then
             self.velocity.y = math.max(0, self.velocity.y)
         elseif valid_type_horizontal(c) then

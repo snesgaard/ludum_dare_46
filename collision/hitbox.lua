@@ -6,7 +6,8 @@ end
 
 local function move_filter(item, other)
     -- Ignore terrain
-    if not other.type then return end
+    if other.type ~= "hitbox" then return end
+    if other:find("..") == item:find("..") then return end
     return "cross"
 end
 

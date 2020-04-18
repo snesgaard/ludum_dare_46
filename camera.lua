@@ -5,7 +5,7 @@ function Camera:create()
     local this = {
         position = vec2(0, 0),
         scale = vec2(2, 2),
-        max_speed = 400,
+        max_speed = 600,
     }
     return setmetatable(this, Camera)
 end
@@ -31,6 +31,7 @@ end
 
 
 function Camera:update(dt, target, level)
+    if not target then return end
     -- First calculate the destination
     local w, h = self:get_size()
     local level_w = level.tilewidth * level.width
@@ -38,7 +39,7 @@ function Camera:update(dt, target, level)
     local x = target.transform.position.x - w * 0.5
     local y = target.transform.position.y - h * 0.5
     local speed = target.velocity or vec2()
-    local ox, oy = get_offset(speed.x, w), get_offset(speed.y, h, -100) * 0 - 50
+    local ox, oy = get_offset(speed.x, w) * 2, get_offset(speed.y, h, -100) * 0 - 50
     local next_pos = vec2(x + ox, y + oy)
     -- next calculate the rate of change
     local d_pos = next_pos - self.position

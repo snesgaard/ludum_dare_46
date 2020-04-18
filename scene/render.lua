@@ -64,13 +64,13 @@ light.light_fragment = [[
         vec4 screen_color = Texel(diffuse, screen_uv);
         float dist = length(texture_coords - vec2(0.5)) + offset;
         float radius = 0.5;
-        float att = clamp(1.0 - dist*dist/(radius*radius), 0.0, 1.0); att *= att;
-        /*
+        //float att = clamp(1.0 - dist*dist/(radius*radius), 0.0, 1.0); att *= att;
+
         float att = 1.0;
         att = dist <= radius * 0.60 ? att: att * 0.5;
         att = dist <= radius * 0.80 ? att: att * 0.5;
         att = dist <= radius ? att : 0.0;
-        */
+        
 
         return color * screen_color * vec4(vec3(1.0), att);
     }
@@ -117,12 +117,21 @@ function light.exit(node, info)
     gfx.pop()
 end
 
+function render.diffuse(camera, level, scenegraph)
+    if level then
+        level:draw(camera:get_transform())
+    end
+    camera:transform()
+    scenegraph:traverse(render, {draw_frame=false})
+end
 
 function render.fullpass(camera, level, scenegraph, settings)
     settings = settings or {}
 
     gfx.setCanvas(render.buffer)
-    level:draw(camera:get_transform())
+    if level then
+        level:draw(camera:get_transform())
+    end
     camera:transform()
 
     scenegraph:traverse(render, {draw_frame=false})
