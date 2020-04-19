@@ -50,7 +50,7 @@ $(windows_zip): $(love_win64) $(windows_binary)
 	mkdir -p build/win64
 	cp -r $(love_win64) build/win64/$(title)
 	cp $(windows_binary) build/win64/$(title)
-	rm build/win64/love.exe build/win64/lovec.exe
+	rm build/win64/$(title)/love.exe build/win64/$(title)/lovec.exe
 	cd build/win64/; zip -9 -r tmp.zip $(title)
 	mv build/win64/tmp.zip $@
 
@@ -59,7 +59,7 @@ $(love_win64_zip):
 	wget https://github.com/love2d/love/releases/download/11.3/love-11.3-win64.zip -O $@
 
 $(love_win64): $(love_win64_zip)
-	cd build; unzip $<
+	cd build; unzip love-11.3-win64.zip
 
 $(love_file):
 	@mkdir -p $(dir $@)
