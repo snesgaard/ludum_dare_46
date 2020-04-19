@@ -53,7 +53,7 @@ function hitbox:update(dt, args)
     end
 
     local _, _, col, len = self.world:check(
-        self, shape.x, shape.y, move_filter
+        self, shape.x, shape.y, self.move_filter or move_filter
     )
     for i = 1, len do resolve_collision(col[i]) end
 end

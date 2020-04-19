@@ -26,7 +26,7 @@ end
 
 local function get_max_speed(dt, scale, distance)
     local ad = math.abs(distance)
-    return math.max(100, ad * ad * 0.05 * scale / 4.0)
+    return math.max(400, ad * ad * 0.05 * scale / 4.0)
 end
 
 
@@ -39,7 +39,7 @@ function Camera:update(dt, target, level)
     local x = target.transform.position.x - w * 0.5
     local y = target.transform.position.y - h * 0.5
     local speed = target.velocity or vec2()
-    local ox, oy = get_offset(speed.x, w) * 2, get_offset(speed.y, h, -100) * 0 - 50
+    local ox, oy = get_offset(speed.x, w) * 0, get_offset(speed.y, h, -100) * 0 - 50
     local next_pos = vec2(x + ox, y + oy)
     -- next calculate the rate of change
     local d_pos = next_pos - self.position

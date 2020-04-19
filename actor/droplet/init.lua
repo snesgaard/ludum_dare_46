@@ -2,7 +2,7 @@ local droplet = {}
 
 local inner_color = list(48, 176, 219, 133):map(function(v) return v / 255.0 end)
 local outer_color = list(0, 51, 170, 133):map(function(v) return v / 255.0 end)
-local radius = 4
+local radius = 8
 
 function droplet.scene(world)
     local w = 1.7 * radius / math.sqrt(2)

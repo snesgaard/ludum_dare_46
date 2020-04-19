@@ -8,7 +8,26 @@ local function is_inbound(world, shape)
     return 0 <= lx and 0 <= ly and ux <= world._width and uy <= world._height
 end
 
-function level.load(path, loader, ...)
+local function default_loader(world, obj, scene_graph)
+    local f = require(obj.type)
+    f = type(f) == "table" and f or {scene=f}
+
+    local id = obj.name ~= "" and obj.name or lume.uuid()
+
+    local shape = spatial(obj.x, obj.y, obj.width, obj.height)
+    local node = scene_graph:init_actor(id, f.scene, world)
+    local align_method = Spatial[f.align or "centerbottom"] or Spatial.centerbottom
+    if not node.transform then
+        node.transform = transform(align_method(shape):unpack())
+    else
+        local p = node.transform.position
+        p.x, p.y = align_method(shape):unpack()
+    end
+
+    return id
+end
+
+function level.load(path, loader, scene_graph)
     loader = loader or {}
     local world = bump.newWorld()
     local level = sti(path, { "bump" })
@@ -17,7 +36,7 @@ function level.load(path, loader, ...)
     world._width = level.width * level.tilewidth
     world._height = level.height * level.tileheight
     world.is_inbound = is_inbound
-    gamestate.scene_graph.world = world
+    scene_graph.world = world
 
     local bg_layer = level:addCustomLayer("bg_layer", 1)
 
@@ -30,30 +49,31 @@ function level.load(path, loader, ...)
         gfx.pop()
     end
 
-        for name, layer in pairs(level.layers) do
-            if name == "entity" then
-                for _, obj in pairs(layer.objects) do
-                    local f = loader[obj.type]
-                    if f and obj.visible then
-                        local id = f(level.world, obj, ...)
-                        if obj.properties.script then
-                            if id then
-                                local script = require(obj.properties.script)
-                                coroutine.set(
-                                    id, script, gamestate.scene_graph, id,
-                                    obj.properties,
-                                    spatial(obj.x, obj.y, obj.width, obj.height)
-                                )
-                            else
-                                log.warn("An id must be given for %s", obj.name)
-                            end
+    for name, layer in pairs(level.layers) do
+        if name == "entity" then
+            for i, obj in ipairs(layer.objects) do
+                local f = loader[obj.type]
+                f = f or default_loader
+                if f and obj.visible then
+                    local id = f(level.world, obj, scene_graph)
+                    if obj.properties.script then
+                        if id then
+                            local script = require(obj.properties.script)
+                            coroutine.set(
+                                id, script, scene_graph, id,
+                                obj.properties,
+                                spatial(obj.x, obj.y, obj.width, obj.height)
+                            )
+                        else
+                            log.warn("An id must be given for %s", obj.name)
                         end
                     end
-
                 end
-                layer.visible = false
+
             end
+            layer.visible = false
         end
+    end
 
     collision.init(level.world)
 

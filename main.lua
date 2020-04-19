@@ -9,7 +9,7 @@ function love.load(arg)
     arg = list(unpack(arg))
 
     local old_load = love.load
-    local entry = arg[1] or "battle"
+    local entry = arg[1] or "sprite"
     log.info("Entering %s", entry)
 
     entry = entry:gsub('/', '')

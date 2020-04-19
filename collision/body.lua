@@ -131,6 +131,7 @@ function body:update(dt, args)
     self.on_ground = false
     for i = 1, len do
         local c = col[i]
+        event(self, "collision")
         if valid_type_vertical(c) and c.normal.y < -0.9 then
             self.velocity.y = math.min(0, self.velocity.y)
             self.ground = love.timer.getTime()

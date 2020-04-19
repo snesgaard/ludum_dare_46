@@ -51,6 +51,7 @@ function gamestate:checkpoint(id)
 end
 
 function gamestate:update(dt)
+    if not self.respawn_id then return end
     local time = self.ticks.time_till_next - dt
     if time < 0 then
         time = self.ticks.tick_duration

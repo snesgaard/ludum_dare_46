@@ -29,6 +29,25 @@ end
 
 local control = {}
 
+function control.constant_motion(scene_graph, id, opt)
+    local body = scene_graph:get_body(id)
+
+    if not body then
+        errorf("Could no locate body for %s", id)
+    end
+
+    coroutine.set(animation.id(id), animation.idle, scene_graph, id)
+
+    body.velocity.x = opt.velocity.x
+    if opt.sleep then
+        event:sleep(opt.sleep)
+    end
+
+    event:wait(body, "collision")
+
+    return control.idle(scene_graph, id)
+end
+
 function control.should_jump(body)
     if not body.jump or not body.ground then return end
     if math.abs(body.jump - body.ground) < 0.2 then
@@ -69,6 +88,10 @@ function control.idle(scene_graph, id)
     coroutine.set(animation.id(id), animation.idle, scene_graph, id)
 
     local control_token = event:listen("update", curry(control.motion, body))
+
+    coroutine.on_cleanup(function()
+        event:clear(control_token)
+    end)
 
     while true do
         local key = event:wait("keypressed")
