@@ -8,8 +8,24 @@ local gamestate = {
     ticks = {
         tick_duration = 10,
         time_till_next = nil
-    }
+    },
+    time_start = nil,
+    time_end = nil
 }
+
+function gamestate:start()
+    self.time_start = self.time_start or love.timer.getTime()
+end
+
+function gamestate:stop()
+    self.time_end = self.time_end or love.timer.getTime()
+end
+
+function gamestate:complete_time()
+    if self.time_start and self.time_end then
+        return self.time_end - self.time_start
+    end
+end
 
 
 function gamestate:set_respawn(id)
@@ -52,6 +68,7 @@ end
 
 function gamestate:update(dt)
     if not self.respawn_id then return end
+    if self:complete_time() then return end
     local time = self.ticks.time_till_next - dt
     if time < 0 then
         time = self.ticks.tick_duration

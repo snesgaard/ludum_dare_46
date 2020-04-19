@@ -6,6 +6,7 @@ level_io = require "level"
 Camera = require "camera"
 local control = require "gameplay.control"
 gamestate = require "gameplay.gamestate"
+label = require "label"
 
 function love.load()
     gfx.setBackgroundColor(0, 0, 0, 0)
@@ -23,6 +24,8 @@ function love.load()
     camera = Camera.create()
 
     gamestate:set_torch_level(4)
+    gamestate:start()
+    --gamestate:stop()
 end
 
 function love.keypressed(...)
@@ -36,7 +39,7 @@ function love.update(dt)
     tween.update(dt)
     event:spin()
     camera:update(dt, gamestate.scene_graph:get_body(gamestate.player_id), level)
-    require("lovebird").update()
+    --require("lovebird").update()
 end
 
 
@@ -48,6 +51,12 @@ function love.draw()
         camera, level,
         gamestate.scene_graph:find("world")
     )
-    --gfx.origin()
     --draw_world(level.world)
+    gfx.origin()
+    label("<- -> :: Move\nspace :: Jump", 20, 20, 100, nil, {valign = "top", margin=vec2(15, 15)})
+    local time = gamestate:complete_time()
+    if time then
+        local msg = string.format("WINNNER!\nOnly took %fs", time)
+        label(msg, 100, 100, 600, nil,  {valign = "top", margin=vec2(15, 15), font=font(40)})
+    end
 end
