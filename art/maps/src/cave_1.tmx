@@ -129,10 +129,11 @@
   <object id="6" name="treeB" type="tree" x="1791.69" y="1759.88" width="17" height="64"/>
   <object id="8" name="treeA" type="tree" x="207.378" y="1743.95" width="17" height="64"/>
   <object id="23" name="treeC" type="tree" x="655.773" y="943.788" width="17" height="64"/>
-  <object id="1" name="player_spawn0" type="player_spawn" x="112.03" y="1791.75" width="16" height="16" visible="0"/>
+  <object id="62" name="exit" type="actor.exit" x="159.909" y="1583.5" width="47.5909" height="80.0909"/>
+  <object id="1" name="player_spawn0" type="player_spawn" x="112.03" y="1791.75" width="16" height="16"/>
   <object id="5" name="player_spawn1" type="player_spawn" x="1721" y="1804.5" width="16" height="16" visible="0"/>
   <object id="21" name="player_spawn2" type="player_spawn" x="626.5" y="987" width="16" height="16" visible="0"/>
-  <object id="34" name="player_spawn3" type="player_spawn" x="1610.5" y="1147.5" width="16" height="16"/>
+  <object id="34" name="player_spawn3" type="player_spawn" x="1610.5" y="1147.5" width="16" height="16" visible="0"/>
   <object id="9" type="droplet_spawn" x="1551.87" y="1392" width="16.0417" height="15.875">
    <properties>
     <property name="script" value="actor.droplet.spawn"/>
@@ -254,6 +255,5 @@
   </object>
   <object id="58" type="actor.vent.up" x="1744.25" y="1247" width="15.5" height="16"/>
   <object id="59" type="actor.vent.left" x="1492" y="735.333" width="20" height="18"/>
-  <object id="62" name="exit" type="actor.exit" x="159.909" y="1583.5" width="47.5909" height="80.0909"/>
  </objectgroup>
 </map>

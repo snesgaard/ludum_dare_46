@@ -15,7 +15,7 @@ local function default_loader(world, obj, scene_graph)
     local id = obj.name ~= "" and obj.name or lume.uuid()
 
     local shape = spatial(obj.x, obj.y, obj.width, obj.height)
-    local node = scene_graph:init_actor(id, f.scene, world)
+    local node = scene_graph:init_actor(id, f.scene, world, shape)
     local align_method = Spatial[f.align or "centerbottom"] or Spatial.centerbottom
     if not node.transform then
         node.transform = transform(align_method(shape):unpack())
